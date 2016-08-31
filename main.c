@@ -281,17 +281,17 @@ uint8_t CheckLine(uint8_t line)
 	{
 		uint8_t input_state = GPIO_ReadInputDataBit(pins_to_check[i].Port, pins_to_check[i].Pin);
 		if(input_state != logic_table[line][i])
-			return false;
+			return 1;
 	}
 
-	return true;
+	return 0;
 }
 
 uint8_t CheckAllLines()
 {
 	for(int i = 0; i < 16; i++)
 	{
-		if(!CheckLine(i)) return i;
+		if(CheckLine(i)) return i;
 	}
 	return 0;
 }
