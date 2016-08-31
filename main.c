@@ -48,7 +48,6 @@ void RCC_Config(void)
 		while (RCC_GetFlagStatus(RCC_FLAG_PLLRDY) == RESET);
 		RCC_SYSCLKConfig(RCC_SYSCLKSource_PLLCLK);
 		while (RCC_GetSYSCLKSource() != 0x08);
-
 	}
 }
 
@@ -259,20 +258,43 @@ uint8_t CheckLine(uint8_t line)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
 
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
 	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
 	GPIO_InitStructure.GPIO_Pin = pins_to_check[line].Pin;
-	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_DOWN;
 
 
-	for(int i = line; i < 16; i++)
+	for(int i = 0; i < 16; i++)
 	{
-
+		GPIO_Init(pins_to_check[i].Port, &GPIO_InitStructure);
 	}
+
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+
+	GPIO_Init(pins_to_check[line].Port, &GPIO_InitStructure);
+
+	GPIO_WriteBit(pins_to_check[line].Port, pins_to_check[line].Pin, Bit_SET);
+
+	for(int i = line + 1; i < 16; i++)
+	{
+		uint8_t input_state = GPIO_ReadInputDataBit(pins_to_check[i].Port, pins_to_check[i].Pin);
+		if(input_state != logic_table[line][i])
+			return false;
+	}
+
+	return true;
 }
 
-
+uint8_t CheckAllLines()
+{
+	for(int i = 0; i < 16; i++)
+	{
+		if(!CheckLine(i)) return i;
+	}
+	return 0;
+}
 
 int main(void)
 {
