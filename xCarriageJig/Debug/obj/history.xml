@@ -1,34 +1,34 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <history>
    <processor signature="arm-none-eabi-gcc noversion nomachine -mcpu=cortex-m0 -mthumb -Wall -ffunction-sections -g -O0 -std=c99 -c -DSTM32F030R8T6 -DSTM32F030X8 -DUSE_STDPERIPH_DRIVER -D__ASSEMBLY__ -I..\..\..\..\..\Users\Bartek\Documents\xJig\cmsis_core -I..\..\..\..\..\Users\Bartek\Documents -I..\..\..\..\..\Users\Bartek\Documents\xJig\stm32_lib\inc -I..\..\..\..\..\Users\Bartek\Documents\xJig\cmsis_boot -I..\..\..\..\..\Users\Bartek -I..\..\..\..\..\Users\Bartek\Documents\xJig\stm32_lib -I..\..\..\..\..\Users\Bartek\Documents\xJig">
-      <target file="hd44780.o" lastModified="156e06564da">
+      <target file="hd44780.o" lastModified="156e555b05b">
          <source file="..\..\..\hd44780.c" lastModified="156d6c2207b"/>
       </target>
-      <target file="stm32f0xx_gpio.o" lastModified="156e0656553">
+      <target file="stm32f0xx_gpio.o" lastModified="156e555b0c7">
          <source file="..\..\..\stm32_lib\src\stm32f0xx_gpio.c" lastModified="156d5bf7857"/>
       </target>
-      <target file="stm32f0xx_rcc.o" lastModified="156e065641c">
+      <target file="stm32f0xx_rcc.o" lastModified="156e555aefd">
          <source file="..\..\..\stm32_lib\src\stm32f0xx_rcc.c" lastModified="156d5bf6440"/>
       </target>
-      <target file="stm32f0xx_flash.o" lastModified="156e065669f">
+      <target file="stm32f0xx_flash.o" lastModified="156e555b210">
          <source file="..\..\..\stm32_lib\src\stm32f0xx_flash.c" lastModified="156d5bf95b5"/>
       </target>
-      <target file="stm32f0xx_usart.o" lastModified="156e06565b4">
+      <target file="stm32f0xx_usart.o" lastModified="156e555b124">
          <source file="..\..\..\stm32_lib\src\stm32f0xx_usart.c" lastModified="156d63f3509"/>
       </target>
-      <target file="stm32f0xx_misc.o" lastModified="156e06566cf">
+      <target file="stm32f0xx_misc.o" lastModified="156e555b244">
          <source file="..\..\..\stm32_lib\src\stm32f0xx_misc.c" lastModified="156d5bf69d4"/>
       </target>
-      <target file="main.o" lastModified="156e53c79ca">
-         <source file="..\..\..\main.c" lastModified="156e53c77f4"/>
+      <target file="main.o" lastModified="156e555aff4">
+         <source file="..\..\..\main.c" lastModified="156e55554fd"/>
       </target>
-      <target file="stm32f0xx_tim.o" lastModified="156e065664f">
+      <target file="stm32f0xx_tim.o" lastModified="156e555b1bf">
          <source file="..\..\..\stm32_lib\src\stm32f0xx_tim.c" lastModified="156d63f4ee2"/>
       </target>
-      <target file="startup_stm32f0xx.o" lastModified="156e065646e">
+      <target file="startup_stm32f0xx.o" lastModified="156e555affc">
          <source file="..\..\..\cmsis_boot\startup\startup_stm32f0xx.s" lastModified="156d5bf6461"/>
       </target>
-      <target file="system_stm32f0xx_temp.o" lastModified="156e0656513">
+      <target file="system_stm32f0xx_temp.o" lastModified="156e555b08c">
          <source file="..\..\..\cmsis_boot\system_stm32f0xx_temp.c" lastModified="156d5bf646c"/>
       </target>
    </processor>

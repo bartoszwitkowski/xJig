@@ -157,11 +157,6 @@ uint32_t systick_counter = 0;
 void Systick_Handler(void)
 {
 	systick_counter++;
-	if (systick_counter == 100)
-	{
-		systick_counter = 0;
-		GPIO_WriteBit(LED_PORT, LED_PIN, !GPIO_ReadOutputDataBit(LED_PORT, LED_PIN));
-	}
 }
 
 void DefinePins()
@@ -299,7 +294,7 @@ uint8_t CheckAllLines()
 void TellThatThereIsAProblemWithLine(uint8_t number)
 {
 	LCDXY(0,0);
-	LCDOutString("Zwiera ");
+	LCDOutString("     Zwiera     ");
 	LCDXY(0,1);
 	switch (number) {
 		case 0:
@@ -355,6 +350,12 @@ void TellThatThereIsAProblemWithLine(uint8_t number)
 	}
 }
 
+void wait_ms(uint32_t t)
+{
+	systick_counter = 0;
+	while(systick_counter < t);
+}
+
 int main(void)
 {
 	RCC_Config();
@@ -364,7 +365,6 @@ int main(void)
 	SysTick_Config_Mod(SysTick_CLKSource_HCLK_Div8, 6000); //1kHz
 
 	DefinePins();
-
 	while (1)
 	{
 	}
