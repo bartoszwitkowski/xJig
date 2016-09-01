@@ -19,8 +19,8 @@
       <target file="stm32f0xx_misc.o" lastModified="156e06566cf">
          <source file="..\..\..\stm32_lib\src\stm32f0xx_misc.c" lastModified="156d5bf69d4"/>
       </target>
-      <target file="main.o" lastModified="156e068f2aa">
-         <source file="..\..\..\main.c" lastModified="156e08b0459"/>
+      <target file="main.o" lastModified="156e53c79ca">
+         <source file="..\..\..\main.c" lastModified="156e53c77f4"/>
       </target>
       <target file="stm32f0xx_tim.o" lastModified="156e065664f">
          <source file="..\..\..\stm32_lib\src\stm32f0xx_tim.c" lastModified="156d63f4ee2"/>

@@ -296,6 +296,65 @@ uint8_t CheckAllLines()
 	return 0;
 }
 
+void TellThatThereIsAProblemWithLine(uint8_t number)
+{
+	LCDXY(0,0);
+	LCDOutString("Zwiera ");
+	LCDXY(0,1);
+	switch (number) {
+		case 0:
+			LCDOutString("Fan1HrtngFrntGND");
+			break;
+		case 1:
+			LCDOutString("Fan1HrtngFrnt24V");
+			break;
+		case 2:
+			LCDOutString("TP HrtngFrnt3V3 ");
+			break;
+		case 3:
+			LCDOutString("TP HrtngFrnt1.24");
+			break;
+		case 4:
+			LCDOutString("PROGND HrtngFrnt");
+			break;
+		case 5:
+			LCDOutString("PRO24V HrtngFrnt");
+			break;
+		case 6:
+			LCDOutString("Fan1GND HrtngBck");
+			break;
+		case 7:
+			LCDOutString("Fan1 24VHrtngBck");
+			break;
+		case 8:
+			LCDOutString("LED GND KK A    ");
+			break;
+		case 9:
+			LCDOutString("LED 24V KK A    ");
+			break;
+		case 10:
+			LCDOutString("Fan1 GND KK A   ");
+			break;
+		case 11:
+			LCDOutString("Fan1 24V KK A   ");
+			break;
+		case 12:
+			LCDOutString("TP 3V3 KK B     ");
+			break;
+		case 13:
+			LCDOutString("TP 1.24 KK B    ");
+			break;
+		case 14:
+			LCDOutString("PRO GND KK B    ");
+			break;
+		case 15:
+			LCDOutString("PRO 24V KK B    ");
+			break;
+		default:
+			break;
+	}
+}
+
 int main(void)
 {
 	RCC_Config();
