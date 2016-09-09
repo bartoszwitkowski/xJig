@@ -81,8 +81,8 @@
   <Files>
     <File name="stm32_lib/inc/stm32f0xx_flash.h" path="stm32_lib/inc/stm32f0xx_flash.h" type="1"/>
     <File name="stm32_lib/src/stm32f0xx_usart.c" path="stm32_lib/src/stm32f0xx_usart.c" type="1"/>
-    <File name="cmsis_core/core_cmInstr.h" path="cmsis_core/core_cmInstr.h" type="1"/>
     <File name="cmsis_boot/startup/startup_stm32f0xx.s" path="cmsis_boot/startup/startup_stm32f0xx.s" type="1"/>
+    <File name="cmsis_core/core_cmInstr.h" path="cmsis_core/core_cmInstr.h" type="1"/>
     <File name="cmsis_boot/stm32f0xx_conf.h" path="cmsis_boot/stm32f0xx_conf.h" type="1"/>
     <File name="stm32_lib/src/stm32f0xx_flash.c" path="stm32_lib/src/stm32f0xx_flash.c" type="1"/>
     <File name="cmsis_boot/system_stm32f0xx_temp.c" path="cmsis_boot/system_stm32f0xx_temp.c" type="1"/>

@@ -154,9 +154,28 @@ void UART_Config()
 
 uint32_t systick_counter = 0;
 
+uint32_t button_check_counter = 0;
+uint8_t previous_button_state = 0;
+uint8_t current_button_state = 0;
+uint8_t button_pressed_flag = 0;
+
 void Systick_Handler(void)
 {
 	systick_counter++;
+	button_check_counter++;
+
+	if(button_check_counter >= 30)
+	{
+		button_check_counter = 0;
+
+		previous_button_state = current_button_state;
+		current_button_state = GPIO_ReadInputDataBit(SWITCH_PORT, SWITCH_PIN);
+
+		if(previous_button_state == 0 && current_button_state == 1)
+		{
+			button_pressed_flag = 1;
+		}
+	}
 }
 
 void DefinePins()
@@ -288,13 +307,13 @@ uint8_t CheckAllLines()
 	{
 		if(CheckLine(i)) return i;
 	}
-	return 0;
+	return 99;
 }
 
 void TellThatThereIsAProblemWithLine(uint8_t number)
 {
 	LCDXY(0,0);
-	LCDOutString("     Zwiera     ");
+	LCDOutString("   Problem z    ");
 	LCDXY(0,1);
 	switch (number) {
 		case 0:
@@ -345,6 +364,8 @@ void TellThatThereIsAProblemWithLine(uint8_t number)
 		case 15:
 			LCDOutString("PRO 24V KK B    ");
 			break;
+		case 99:
+			LCDOutString("     NICZYM     ");
 		default:
 			break;
 	}
@@ -362,11 +383,24 @@ int main(void)
 	GPIO_Config();
 	UART_Config();
 	LCDInit();
+	LCDXY(0,0);
+	LCDOutString("      ELO!      ");
 	SysTick_Config_Mod(SysTick_CLKSource_HCLK_Div8, 6000); //1kHz
 
 	DefinePins();
 	while (1)
 	{
+		if(button_pressed_flag == 1)
+		{
+			button_pressed_flag = 0;
+			uint8_t shorts_state = CheckAllLines();
+			TellThatThereIsAProblemWithLine(shorts_state);
+			if(shorts_state != 99) wait_ms(5000);
+			else wait_ms(2000);
+			LCDClear();
+			LCDXY(0,0);
+			LCDOutString("Dawaj nastepny!");
+  		}
 	}
 
 }
