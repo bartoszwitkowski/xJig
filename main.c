@@ -158,6 +158,7 @@ uint32_t button_check_counter = 0;
 uint8_t previous_button_state = 0;
 uint8_t current_button_state = 0;
 uint8_t button_pressed_flag = 0;
+uint32_t button_pressed_counter = 0;
 
 void Systick_Handler(void)
 {
@@ -175,7 +176,73 @@ void Systick_Handler(void)
 		{
 			button_pressed_flag = 1;
 		}
+		if(previous_button_state == 1 && current_button_state == 1)
+		{
+			button_pressed_counter++;
+		}
+		else button_pressed_counter = 0;
 	}
+}
+
+void play()
+{
+	LCDClear();
+	LCDOutString("D              ");
+	wait_ms(100);
+	LCDXY(0,0);
+	LCDOutString("=D             ");
+	wait_ms(100);
+	LCDXY(0,0);
+	LCDOutString("==D            ");
+	wait_ms(100);
+	LCDXY(0,0);
+	LCDOutString("8==D           ");
+	wait_ms(100);
+	LCDXY(0,0);
+	LCDOutString(" 8==D          ");
+	wait_ms(100);
+	LCDXY(0,0);
+	LCDOutString("  8==D         ");
+	wait_ms(100);
+	LCDXY(0,0);
+	LCDOutString("   8==D        ");
+	wait_ms(100);
+	LCDXY(0,0);
+	LCDOutString("    8==D       ");
+	wait_ms(100);
+	LCDXY(0,0);
+	LCDOutString("     8==D      ");
+	wait_ms(100);
+	LCDXY(0,0);
+	LCDOutString("      8==D     ");
+	wait_ms(100);
+	LCDXY(0,0);
+	LCDOutString("       8==D    ");
+	wait_ms(100);
+	LCDXY(0,0);
+	LCDOutString("        8==D   ");
+	wait_ms(100);
+	LCDXY(0,0);
+	LCDOutString("         8==D  ");
+	wait_ms(100);
+	LCDXY(0,0);
+	LCDOutString("          8==D ");
+	wait_ms(100);
+	LCDXY(0,0);
+	LCDOutString("           8==D");
+	wait_ms(100);
+	LCDXY(0,0);
+	LCDOutString("            8==");
+	wait_ms(100);
+	LCDXY(0,0);
+	LCDOutString("             8=");
+	wait_ms(100);
+	LCDXY(0,0);
+	LCDOutString("              8");
+	wait_ms(100);
+	LCDXY(0,0);
+	LCDOutString("               ");
+
 }
 
 void DefinePins()
@@ -313,6 +380,13 @@ uint8_t CheckAllLines()
 void TellThatThereIsAProblemWithLine(uint8_t number)
 {
 	LCDXY(0,0);
+	if(number == 99)
+	{
+		LCDOutString("Wszystko cacy!");
+		LCDXY(0,1);
+		LCDOutString("                ");
+		return;
+	}
 	LCDOutString("   Problem z    ");
 	LCDXY(0,1);
 	switch (number) {
@@ -401,6 +475,10 @@ int main(void)
 			LCDXY(0,0);
 			LCDOutString("Dawaj nastepny!");
   		}
+		if(button_pressed_counter >= 3000)
+		{
+			play();
+		}
 	}
 
 }
