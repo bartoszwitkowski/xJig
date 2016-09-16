@@ -4,6 +4,7 @@
 #include <stm32f0xx_gpio.h>
 #include <stm32f0xx_misc.h>
 #include <stm32f0xx_flash.h>
+#include <stm32f0xx_exti.h>
 #include "hd44780.h"
 
 #define KEYTRANSISTORSC_PORT GPIOA
@@ -26,29 +27,35 @@ struct Pin
 
 struct Pin pins_to_check[16];
 
+struct ErrorState
+{
+	uint8_t MainLine; //99 means no errors
+	uint8_t ProblemType ; // 0 - no connection, 1 - short
+	uint8_t SecondLine; // line that has shorts or no connection
+};
+
+struct ErrorState errors;
+
 void RCC_Config(void)
 {
-	ErrorStatus HSEStartUpStatus;
+//	ErrorStatus HSIStartUpStatus;
 
-	RCC_DeInit();
+//	RCC_DeInit();
 
 	RCC_HSICmd(ENABLE);
 
-	HSEStartUpStatus = RCC_WaitForHSEStartUp();
+	while (RCC_GetFlagStatus(RCC_FLAG_HSIRDY) == RESET);
 
-	if (HSEStartUpStatus == SUCCESS)
-	{
-		FLASH_PrefetchBufferCmd(ENABLE);
-		FLASH_SetLatency(FLASH_Latency_1);
+	FLASH_PrefetchBufferCmd(ENABLE);
+	FLASH_SetLatency(FLASH_Latency_1);
 
-		RCC_HCLKConfig(RCC_SYSCLK_Div1);
-		RCC_PCLKConfig(RCC_HCLK_Div1);
-		RCC_PLLConfig(RCC_PLLSource_HSI_Div2, RCC_PLLMul_12);
-		RCC_PLLCmd(ENABLE);
-		while (RCC_GetFlagStatus(RCC_FLAG_PLLRDY) == RESET);
-		RCC_SYSCLKConfig(RCC_SYSCLKSource_PLLCLK);
-		while (RCC_GetSYSCLKSource() != 0x08);
-	}
+	RCC_HCLKConfig(RCC_SYSCLK_Div1);
+	RCC_PCLKConfig(RCC_HCLK_Div1);
+	RCC_PLLConfig(RCC_PLLSource_HSI_Div2, RCC_PLLMul_12);
+	RCC_PLLCmd(ENABLE);
+	while (RCC_GetFlagStatus(RCC_FLAG_PLLRDY) == RESET);
+	RCC_SYSCLKConfig(RCC_SYSCLKSource_PLLCLK);
+	while (RCC_GetSYSCLKSource() != 0x08);
 }
 
 unsigned int SysTick_Config_Mod(unsigned long int SysTick_CLKSource, unsigned long int Ticks)
@@ -72,7 +79,7 @@ unsigned int SysTick_Config_Mod(unsigned long int SysTick_CLKSource, unsigned lo
 
 void GPIO_Config()
 {
-	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA | RCC_AHBPeriph_GPIOB | RCC_AHBPeriph_GPIOC, ENABLE);
+	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA | RCC_AHBPeriph_GPIOB | RCC_AHBPeriph_GPIOC | RCC_AHBPeriph_GPIOD, ENABLE);
 
 	GPIO_InitTypeDef GPIO_InitStructure;
 
@@ -87,13 +94,14 @@ void GPIO_Config()
 	GPIO_InitStructure.GPIO_Pin = KEYTRANSISTOR24_PIN;
 	GPIO_Init(KEYTRANSISTOR24_PORT, &GPIO_InitStructure);
 
-	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_DOWN;
 	GPIO_InitStructure.GPIO_Pin = LED_PIN;
 	GPIO_Init(LED_PORT, &GPIO_InitStructure);
 
 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
 	GPIO_InitStructure.GPIO_Pin = SWITCH_PIN;
 	GPIO_Init(SWITCH_PORT, &GPIO_InitStructure);
+	GPIO_WriteBit(SWITCH_PORT, SWITCH_PIN, Bit_SET);
 }
 
 void SetKey24()
@@ -159,11 +167,13 @@ uint8_t previous_button_state = 0;
 uint8_t current_button_state = 0;
 uint8_t button_pressed_flag = 0;
 uint32_t button_pressed_counter = 0;
+uint16_t second_counter = 0;
 
-void Systick_Handler(void)
+void SysTick_Handler(void)
 {
 	systick_counter++;
 	button_check_counter++;
+	second_counter++;
 
 	if(button_check_counter >= 30)
 	{
@@ -172,15 +182,20 @@ void Systick_Handler(void)
 		previous_button_state = current_button_state;
 		current_button_state = GPIO_ReadInputDataBit(SWITCH_PORT, SWITCH_PIN);
 
-		if(previous_button_state == 0 && current_button_state == 1)
+		if(previous_button_state == 1 && current_button_state == 0)
 		{
 			button_pressed_flag = 1;
 		}
-		if(previous_button_state == 1 && current_button_state == 1)
+		if(previous_button_state == 0 && current_button_state == 0)
 		{
 			button_pressed_counter++;
 		}
 		else button_pressed_counter = 0;
+	}
+	if(second_counter >= 1000)
+	{
+		second_counter = 0;
+		GPIO_WriteBit(LED_PORT, LED_PIN, !GPIO_ReadOutputDataBit(LED_PORT, LED_PIN));
 	}
 }
 
@@ -188,58 +203,58 @@ void play()
 {
 	LCDClear();
 	LCDOutString("D              ");
-	wait_ms(100);
+	wait_ms(200);
 	LCDXY(0,0);
 	LCDOutString("=D             ");
-	wait_ms(100);
+	wait_ms(200);
 	LCDXY(0,0);
 	LCDOutString("==D            ");
-	wait_ms(100);
+	wait_ms(200);
 	LCDXY(0,0);
 	LCDOutString("8==D           ");
-	wait_ms(100);
+	wait_ms(200);
 	LCDXY(0,0);
 	LCDOutString(" 8==D          ");
-	wait_ms(100);
+	wait_ms(200);
 	LCDXY(0,0);
 	LCDOutString("  8==D         ");
-	wait_ms(100);
+	wait_ms(200);
 	LCDXY(0,0);
 	LCDOutString("   8==D        ");
-	wait_ms(100);
+	wait_ms(200);
 	LCDXY(0,0);
 	LCDOutString("    8==D       ");
-	wait_ms(100);
+	wait_ms(200);
 	LCDXY(0,0);
 	LCDOutString("     8==D      ");
-	wait_ms(100);
+	wait_ms(200);
 	LCDXY(0,0);
 	LCDOutString("      8==D     ");
-	wait_ms(100);
+	wait_ms(200);
 	LCDXY(0,0);
 	LCDOutString("       8==D    ");
-	wait_ms(100);
+	wait_ms(200);
 	LCDXY(0,0);
 	LCDOutString("        8==D   ");
-	wait_ms(100);
+	wait_ms(200);
 	LCDXY(0,0);
 	LCDOutString("         8==D  ");
-	wait_ms(100);
+	wait_ms(200);
 	LCDXY(0,0);
 	LCDOutString("          8==D ");
-	wait_ms(100);
+	wait_ms(200);
 	LCDXY(0,0);
 	LCDOutString("           8==D");
-	wait_ms(100);
+	wait_ms(200);
 	LCDXY(0,0);
 	LCDOutString("            8==");
-	wait_ms(100);
+	wait_ms(200);
 	LCDXY(0,0);
 	LCDOutString("             8=");
-	wait_ms(100);
+	wait_ms(200);
 	LCDXY(0,0);
 	LCDOutString("              8");
-	wait_ms(100);
+	wait_ms(200);
 	LCDXY(0,0);
 	LCDOutString("               ");
 
@@ -340,17 +355,18 @@ uint8_t CheckLine(uint8_t line)
 	GPIO_InitTypeDef GPIO_InitStructure;
 
 	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-	GPIO_InitStructure.GPIO_Pin = pins_to_check[line].Pin;
+	GPIO_InitStructure.GPIO_Pin = pins_to_check[0].Pin;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_DOWN;
 
-
+	errors.MainLine = line;
 	for(int i = 0; i < 16; i++)
 	{
+		GPIO_InitStructure.GPIO_Pin = pins_to_check[i].Pin;
 		GPIO_Init(pins_to_check[i].Port, &GPIO_InitStructure);
 	}
-
+	GPIO_InitStructure.GPIO_Pin = pins_to_check[line].Pin;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
 
@@ -362,8 +378,14 @@ uint8_t CheckLine(uint8_t line)
 	{
 		uint8_t input_state = GPIO_ReadInputDataBit(pins_to_check[i].Port, pins_to_check[i].Pin);
 		if(input_state != logic_table[line][i])
+		{
+			errors.SecondLine = i;
+			if(input_state == 0) errors.ProblemType = 0;
+			else errors.ProblemType = 1;
 			return 1;
+		}
 	}
+
 
 	return 0;
 }
@@ -377,10 +399,140 @@ uint8_t CheckAllLines()
 	return 99;
 }
 
+void ReportLastTest()
+{
+	if(errors.MainLine < 15)
+	{
+		while (USART_GetFlagStatus(USART2, USART_FLAG_TXE) == RESET);
+		USART_SendData(USART2, errors.MainLine);
+		while (USART_GetFlagStatus(USART2, USART_FLAG_TXE) == RESET);
+		USART_SendData(USART2, errors.ProblemType);
+		while (USART_GetFlagStatus(USART2, USART_FLAG_TXE) == RESET);
+		USART_SendData(USART2, errors.SecondLine);
+
+		LCDXY(0,0);
+		switch (errors.MainLine) {
+			case 0:
+				LCDOutString("FANGND-");
+				break;
+			case 1:
+				LCDOutString("FAN24V-");
+				break;
+			case 2:
+				LCDOutString("TP 3V3-");
+				break;
+			case 3:
+				LCDOutString("TP1.24-");
+				break;
+			case 4:
+				LCDOutString("PROGND-");
+				break;
+			case 5:
+				LCDOutString("PRO24V-");
+				break;
+			case 6:
+				LCDOutString("FANGND-");
+				break;
+			case 7:
+				LCDOutString("FAN24V-");
+				break;
+			case 8:
+				LCDOutString("LEDGND-");
+				break;
+			case 9:
+				LCDOutString("LED24V-");
+				break;
+			case 10:
+				LCDOutString("FANGND-");
+				break;
+			case 11:
+				LCDOutString("FAN24V-");
+				break;
+			case 12:
+				LCDOutString("TP 3V3-");
+				break;
+			case 13:
+				LCDOutString("TP1.24-");
+				break;
+			case 14:
+				LCDOutString("PROGND-");
+				break;
+			case 15:
+				LCDOutString("PRO24V-");
+				break;
+			default:
+				break;
+		}
+		if(errors.ProblemType == 0)
+			LCDSendByte('/');
+		else
+			LCDSendByte('-');
+
+		switch (errors.SecondLine) {
+			case 0:
+				LCDOutString("-FANGND");
+				break;
+			case 1:
+				LCDOutString("-FAN24V");
+				break;
+			case 2:
+				LCDOutString("-TP 3V3");
+				break;
+			case 3:
+				LCDOutString("-TP1.24");
+				break;
+			case 4:
+				LCDOutString("-PROGND");
+				break;
+			case 5:
+				LCDOutString("-PRO24V");
+				break;
+			case 6:
+				LCDOutString("-FANGND");
+				break;
+			case 7:
+				LCDOutString("-FAN24V");
+				break;
+			case 8:
+				LCDOutString("-LEDGND");
+				break;
+			case 9:
+				LCDOutString("-LED24V");
+				break;
+			case 10:
+				LCDOutString("-FANGND");
+				break;
+			case 11:
+				LCDOutString("-FAN24V");
+				break;
+			case 12:
+				LCDOutString("-TP 3V3");
+				break;
+			case 13:
+				LCDOutString("-TP1.24");
+				break;
+			case 14:
+				LCDOutString("-PROGND");
+				break;
+			case 15:
+				LCDOutString("-PRO24V");
+				break;
+			default:
+				break;
+		}
+	}
+	else
+	{
+		USART_SendData(USART2, 99);
+		LCDXY(0,0);
+		LCDOutString(" Wszystko cacy! ");
+	}
+}
+
 void TellThatThereIsAProblemWithLine(uint8_t number)
 {
 	LCDXY(0,0);
-	if(number == 99)
+	if(number >= 15)
 	{
 		LCDOutString("Wszystko cacy!");
 		LCDXY(0,1);
@@ -451,32 +603,76 @@ void wait_ms(uint32_t t)
 	while(systick_counter < t);
 }
 
+void UARTSendMessage(char * s)
+{
+	  while(*s)
+	  {
+		  while (USART_GetFlagStatus(USART2, USART_FLAG_TXE) == RESET);
+		  USART_SendData(USART2, *s++);
+	  }
+}
+
+void PrepareForConnectionTest()
+{
+	//transistor 24 off
+	GPIO_WriteBit(KEYTRANSISTOR24_PORT, KEYTRANSISTOR24_PIN, Bit_RESET);
+
+	wait_ms(10);
+
+	//transistor sc on
+	GPIO_WriteBit(KEYTRANSISTORSC_PORT, KEYTRANSISTORSC_PIN, Bit_SET);
+}
+
 int main(void)
 {
 	RCC_Config();
 	GPIO_Config();
 	UART_Config();
+	SysTick_Config_Mod(SysTick_CLKSource_HCLK_Div8, 6000); //1kHz
+	uint8_t i = 0;
+//	while(1)
+//	{
+//	   while (USART_GetFlagStatus(USART2, USART_FLAG_TXE) == RESET);
+//	   USART_SendData(USART2, i++);
+//		GPIO_WriteBit(LED_PORT, LED_PIN, !GPIO_ReadOutputDataBit(LED_PORT, LED_PIN));
+////		for(uint32_t i = 0; i < 1000000; i++);
+//		wait_ms(200);
+//	}
 	LCDInit();
 	LCDXY(0,0);
 	LCDOutString("      ELO!      ");
-	SysTick_Config_Mod(SysTick_CLKSource_HCLK_Div8, 6000); //1kHz
+
+//	SysTick_Config(6000*8);
+//	while(1);
+//	{
+//		GPIO_WriteBit(LED_PORT, LED_PIN, !GPIO_ReadOutputDataBit(LED_PORT, LED_PIN));
+//		for(uint32_t i = 0; i < 1000000; i++);
+//	}
+	//	wait_ms(1000);
+
 
 	DefinePins();
 	while (1)
 	{
 		if(button_pressed_flag == 1)
 		{
+//			UARTSendMessage("Pressed button\r\n");
 			button_pressed_flag = 0;
+			PrepareForConnectionTest();
 			uint8_t shorts_state = CheckAllLines();
-			TellThatThereIsAProblemWithLine(shorts_state);
+			ReportLastTest();
+//			USART_SendData(USART2, shorts_state);
+//			TellThatThereIsAProblemWithLine(shorts_state);
 			if(shorts_state != 99) wait_ms(5000);
 			else wait_ms(2000);
 			LCDClear();
 			LCDXY(0,0);
 			LCDOutString("Dawaj nastepny!");
+
   		}
-		if(button_pressed_counter >= 3000)
+		if(button_pressed_counter >= 150)
 		{
+			UARTSendMessage("Rocket incoming, bitches!\r\n");
 			play();
 		}
 	}

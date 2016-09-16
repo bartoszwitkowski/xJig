@@ -13,6 +13,9 @@
          <include file="..\..\..\stm32_lib\inc\stm32f0xx_gpio.h"/>
          <include file="..\..\..\stm32_lib\inc\stm32f0xx_rcc.h"/>
       </source>
+      <source file="..\..\..\stm32_lib\src\stm32f0xx_exti.c" lastModified="1572432ed97">
+         <include file="..\..\..\stm32_lib\inc\stm32f0xx_exti.h"/>
+      </source>
       <source file="..\..\..\cmsis_boot\stm32f0xx.h" lastModified="156d5bf6851">
          <include file="..\..\..\cmsis_core\core_cm0.h"/>
          <include file="..\..\..\cmsis_boot\system_stm32f0xx.h"/>
@@ -22,20 +25,23 @@
       <source file="..\..\..\stm32_lib\src\stm32f0xx_misc.c" lastModified="156d5bf69d4">
          <include file="..\..\..\stm32_lib\inc\stm32f0xx_misc.h"/>
       </source>
-      <source file="..\..\..\hd44780.h" lastModified="156d6d4d928">
+      <source file="..\..\..\hd44780.h" lastModified="1572d14f2eb">
          <include file="..\..\..\stm32_lib\inc\stm32f0xx_gpio.h"/>
          <include file="..\..\..\stm32_lib\inc\stm32f0xx_rcc.h"/>
       </source>
       <source file="..\..\..\stm32_lib\src\stm32f0xx_flash.c" lastModified="156d5bf95b5">
          <include file="..\..\..\stm32_lib\inc\stm32f0xx_flash.h"/>
       </source>
-      <source file="..\..\..\hd44780.c" lastModified="156d6c2207b">
+      <source file="..\..\..\hd44780.c" lastModified="1572d14ef10">
          <include file="..\..\..\hd44780.h"/>
       </source>
       <source file="..\..\..\stm32_lib\inc\stm32f0xx_tim.h" lastModified="156d63f4ee1">
          <include file="..\..\..\cmsis_boot\stm32f0xx.h"/>
       </source>
       <source file="..\..\..\cmsis_boot\system_stm32f0xx_temp.c" lastModified="156d5bf646c">
+         <include file="..\..\..\cmsis_boot\stm32f0xx.h"/>
+      </source>
+      <source file="..\..\..\stm32_lib\inc\stm32f0xx_exti.h" lastModified="1572432ed96">
          <include file="..\..\..\cmsis_boot\stm32f0xx.h"/>
       </source>
       <source file="..\..\..\stm32_lib\inc\stm32f0xx_flash.h" lastModified="156d5bf95b4">

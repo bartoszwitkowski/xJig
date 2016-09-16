@@ -74,24 +74,27 @@
     <Component id="419" name="RCC" path="" type="2"/>
     <Component id="421" name="MISC" path="" type="2"/>
     <Component id="422" name="GPIO" path="" type="2"/>
+    <Component id="429" name="EXTI" path="" type="2"/>
     <Component id="430" name="FLASH" path="" type="2"/>
     <Component id="436" name="TIM" path="" type="2"/>
     <Component id="437" name="USART" path="" type="2"/>
   </Components>
   <Files>
     <File name="stm32_lib/inc/stm32f0xx_flash.h" path="stm32_lib/inc/stm32f0xx_flash.h" type="1"/>
+    <File name="stm32_lib/src/stm32f0xx_exti.c" path="stm32_lib/src/stm32f0xx_exti.c" type="1"/>
     <File name="stm32_lib/src/stm32f0xx_usart.c" path="stm32_lib/src/stm32f0xx_usart.c" type="1"/>
-    <File name="cmsis_boot/startup/startup_stm32f0xx.s" path="cmsis_boot/startup/startup_stm32f0xx.s" type="1"/>
-    <File name="cmsis_core/core_cmInstr.h" path="cmsis_core/core_cmInstr.h" type="1"/>
     <File name="cmsis_boot/stm32f0xx_conf.h" path="cmsis_boot/stm32f0xx_conf.h" type="1"/>
+    <File name="cmsis_core/core_cmInstr.h" path="cmsis_core/core_cmInstr.h" type="1"/>
+    <File name="cmsis_boot/startup/startup_stm32f0xx.s" path="cmsis_boot/startup/startup_stm32f0xx.s" type="1"/>
     <File name="stm32_lib/src/stm32f0xx_flash.c" path="stm32_lib/src/stm32f0xx_flash.c" type="1"/>
     <File name="cmsis_boot/system_stm32f0xx_temp.c" path="cmsis_boot/system_stm32f0xx_temp.c" type="1"/>
     <File name="cmsis_boot" path="" type="2"/>
     <File name="cmsis_core/core_cmFunc.h" path="cmsis_core/core_cmFunc.h" type="1"/>
     <File name="stm32_lib" path="" type="2"/>
-    <File name="hd44780.h" path="hd44780.h" type="1"/>
     <File name="cmsis_boot/startup" path="" type="2"/>
+    <File name="hd44780.h" path="hd44780.h" type="1"/>
     <File name="stm32_lib/inc/stm32f0xx_tim.h" path="stm32_lib/inc/stm32f0xx_tim.h" type="1"/>
+    <File name="stm32_lib/inc/stm32f0xx_exti.h" path="stm32_lib/inc/stm32f0xx_exti.h" type="1"/>
     <File name="cmsis_core" path="" type="2"/>
     <File name="stm32_lib/inc/stm32f0xx_gpio.h" path="stm32_lib/inc/stm32f0xx_gpio.h" type="1"/>
     <File name="stm32_lib/inc" path="" type="2"/>
