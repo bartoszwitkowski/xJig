@@ -202,61 +202,64 @@ void SysTick_Handler(void)
 void play()
 {
 	LCDClear();
-	LCDOutString("D              ");
+	LCDOutString("D       "); LCDAddress(128+41); LCDOutString("        ");
 	wait_ms(200);
 	LCDXY(0,0);
-	LCDOutString("=D             ");
+	LCDOutString("=D      "); LCDAddress(128+41); LCDOutString("        ");
 	wait_ms(200);
 	LCDXY(0,0);
-	LCDOutString("==D            ");
+	LCDOutString("==D     "); LCDAddress(128+41); LCDOutString("        ");
 	wait_ms(200);
 	LCDXY(0,0);
-	LCDOutString("8==D           ");
+	LCDOutString("8==D    "); LCDAddress(128+41); LCDOutString("        ");
 	wait_ms(200);
 	LCDXY(0,0);
-	LCDOutString(" 8==D          ");
+	LCDOutString(" 8==D   "); LCDAddress(128+41); LCDOutString("        ");
 	wait_ms(200);
 	LCDXY(0,0);
-	LCDOutString("  8==D         ");
+	LCDOutString("  8==D  "); LCDAddress(128+41); LCDOutString("        ");
 	wait_ms(200);
 	LCDXY(0,0);
-	LCDOutString("   8==D        ");
+	LCDOutString("   8==D "); LCDAddress(128+41); LCDOutString("        ");
 	wait_ms(200);
 	LCDXY(0,0);
-	LCDOutString("    8==D       ");
+	LCDOutString("    8==D"); LCDAddress(128+41); LCDOutString("        ");
 	wait_ms(200);
 	LCDXY(0,0);
-	LCDOutString("     8==D      ");
+	LCDOutString("     8=="); LCDAddress(128+41); LCDOutString("D       ");
 	wait_ms(200);
 	LCDXY(0,0);
-	LCDOutString("      8==D     ");
+	LCDOutString("      8="); LCDAddress(128+41); LCDOutString("=D      ");
 	wait_ms(200);
 	LCDXY(0,0);
-	LCDOutString("       8==D    ");
+	LCDOutString("       8"); LCDAddress(128+41); LCDOutString("==D     ");
 	wait_ms(200);
 	LCDXY(0,0);
-	LCDOutString("        8==D   ");
+	LCDOutString("        "); LCDAddress(128+41); LCDOutString("8==D    ");
 	wait_ms(200);
 	LCDXY(0,0);
-	LCDOutString("         8==D  ");
+	LCDOutString("        "); LCDAddress(128+41); LCDOutString(" 8==D   ");
 	wait_ms(200);
 	LCDXY(0,0);
-	LCDOutString("          8==D ");
+	LCDOutString("        "); LCDAddress(128+41); LCDOutString("  8==D  ");
 	wait_ms(200);
 	LCDXY(0,0);
-	LCDOutString("           8==D");
+	LCDOutString("        "); LCDAddress(128+41); LCDOutString("   8==D ");
 	wait_ms(200);
 	LCDXY(0,0);
-	LCDOutString("            8==");
+	LCDOutString("        "); LCDAddress(128+41); LCDOutString("    8==D");
 	wait_ms(200);
 	LCDXY(0,0);
-	LCDOutString("             8=");
+	LCDOutString("        "); LCDAddress(128+41); LCDOutString("     8==");
 	wait_ms(200);
 	LCDXY(0,0);
-	LCDOutString("              8");
+	LCDOutString("        "); LCDAddress(128+41); LCDOutString("      8=");
 	wait_ms(200);
 	LCDXY(0,0);
-	LCDOutString("               ");
+	LCDOutString("        "); LCDAddress(128+41); LCDOutString("       8");
+	wait_ms(200);
+	LCDXY(0,0);
+	LCDOutString("        "); LCDAddress(128+41); LCDOutString("        ");
 
 }
 
@@ -468,6 +471,7 @@ void ReportLastTest()
 		else
 			LCDSendByte('-');
 
+		LCDAddress(128+41);
 		switch (errors.SecondLine) {
 			case 0:
 				LCDOutString("-FANGND");
@@ -525,75 +529,9 @@ void ReportLastTest()
 	{
 		USART_SendData(USART2, 99);
 		LCDXY(0,0);
-		LCDOutString(" Wszystko cacy! ");
-	}
-}
-
-void TellThatThereIsAProblemWithLine(uint8_t number)
-{
-	LCDXY(0,0);
-	if(number >= 15)
-	{
-		LCDOutString("Wszystko cacy!");
-		LCDXY(0,1);
-		LCDOutString("                ");
-		return;
-	}
-	LCDOutString("   Problem z    ");
-	LCDXY(0,1);
-	switch (number) {
-		case 0:
-			LCDOutString("Fan1HrtngFrntGND");
-			break;
-		case 1:
-			LCDOutString("Fan1HrtngFrnt24V");
-			break;
-		case 2:
-			LCDOutString("TP HrtngFrnt3V3 ");
-			break;
-		case 3:
-			LCDOutString("TP HrtngFrnt1.24");
-			break;
-		case 4:
-			LCDOutString("PROGND HrtngFrnt");
-			break;
-		case 5:
-			LCDOutString("PRO24V HrtngFrnt");
-			break;
-		case 6:
-			LCDOutString("Fan1GND HrtngBck");
-			break;
-		case 7:
-			LCDOutString("Fan1 24VHrtngBck");
-			break;
-		case 8:
-			LCDOutString("LED GND KK A    ");
-			break;
-		case 9:
-			LCDOutString("LED 24V KK A    ");
-			break;
-		case 10:
-			LCDOutString("Fan1 GND KK A   ");
-			break;
-		case 11:
-			LCDOutString("Fan1 24V KK A   ");
-			break;
-		case 12:
-			LCDOutString("TP 3V3 KK B     ");
-			break;
-		case 13:
-			LCDOutString("TP 1.24 KK B    ");
-			break;
-		case 14:
-			LCDOutString("PRO GND KK B    ");
-			break;
-		case 15:
-			LCDOutString("PRO 24V KK B    ");
-			break;
-		case 99:
-			LCDOutString("     NICZYM     ");
-		default:
-			break;
+		LCDOutString(" Wszystk");
+		LCDAddress(128+41);
+		LCDOutString("o cacy! ");
 	}
 }
 
@@ -640,7 +578,8 @@ int main(void)
 //	}
 	LCDInit();
 	LCDXY(0,0);
-	LCDOutString("      ELO!      ");
+	LCDOutString("    ELO!        ");
+	wait_ms(1000);
 
 //	SysTick_Config(6000*8);
 //	while(1);
@@ -654,6 +593,8 @@ int main(void)
 	DefinePins();
 	while (1)
 	{
+		LCDXY(0,0);
+		LCDOutString("Dawaj wo"); LCDAddress(128+41); LCDOutString("zeczek!");
 		if(button_pressed_flag == 1)
 		{
 //			UARTSendMessage("Pressed button\r\n");
@@ -663,14 +604,14 @@ int main(void)
 			ReportLastTest();
 //			USART_SendData(USART2, shorts_state);
 //			TellThatThereIsAProblemWithLine(shorts_state);
-			if(shorts_state != 99) wait_ms(5000);
+			if(shorts_state != 99) wait_ms(3000);
 			else wait_ms(2000);
 			LCDClear();
 			LCDXY(0,0);
-			LCDOutString("Dawaj nastepny!");
+			LCDOutString("Dawaj na"); LCDAddress(128+41); LCDOutString("stepny!");
 
   		}
-		if(button_pressed_counter >= 150)
+		while(button_pressed_counter >= 50)
 		{
 			UARTSendMessage("Rocket incoming, bitches!\r\n");
 			play();
